@@ -1,0 +1,118 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+:root {
+  --color-condoBlue: #1E88E5;
+  --color-neutralWhite: #F9FAFB;
+  --color-concreteGray: #ECEFF1;
+  --color-deepTealBlue: #0A394F;
+  --color-softAqua: #31B3A5;
+
+  --font-sans: 'Inter', 'Roboto', 'Nunito', system-ui, sans-serif;
+  --border-radius-md: 8px;
+  --box-shadow-card: 0 1px 4px rgba(0, 0, 0, 0.1);
+  --box-shadow-modal: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+body {
+  margin: 0;
+  min-width: 100vw;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  background-color: var(--color-deepTealBlue);
+  color: var(--color-neutralWhite);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 0.5em 0;
+}
+
+h1 {
+  font-size: 2.25rem;
+}
+
+a {
+  color: var(--color-condoBlue);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  border-radius: var(--border-radius-md);
+}
+
+a:hover,
+a:focus-visible {
+  color: var(--color-deepTealBlue);
+  outline: 2px solid var(--color-softAqua);
+  outline-offset: 2px;
+  background-color: var(--color-neutralWhite);
+}
+
+button {
+  font-family: inherit;
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-softAqua);
+  color: var(--color-neutralWhite);
+  padding: 0.6em 1.2em;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: var(--color-neutralWhite);
+  color: var(--color-deepTealBlue);
+}
+
+.card {
+  background-color: var(--color-concreteGray);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--box-shadow-card);
+  padding: 1.5rem;
+  color: var(--color-deepTealBlue);
+}
+
+.modal {
+  background-color: var(--color-neutralWhite);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--box-shadow-modal);
+  padding: 1.5rem;
+  color: var(--color-deepTealBlue);
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--color-deepTealBlue);
+  background-color: var(--color-neutralWhite);
+  border: 1px solid var(--color-concreteGray);
+  border-radius: var(--border-radius-md);
+  padding: 0.6em 1em;
+  width: 100%;
+  transition: border-color 0.25s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--color-condoBlue);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-softAqua);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-bold {
+  font-weight: 700;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(100px); }
+  to { opacity: 1; transform: translateY(-50px); }
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out both;
+}
