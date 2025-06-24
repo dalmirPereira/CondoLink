@@ -116,3 +116,7 @@ input:focus, select:focus, textarea:focus {
 .animate-fade-in {
   animation: fade-in 1s ease-out both;
 }
+
+select option[value=""] {
+  color: gray;
+}

@@ -24,7 +24,7 @@ app.use(cookieParser()); // Middleware for cookies (for refresh tokens)
 app.use("/", express.static(path.join(__dirname, "/public"))); // Serve static files
 
 // Public routes
-// app.use("/register", require("./routes/registerRoute"));
+app.use("/register", require("./routes/registerRoute"));
 app.use("/buildings", require("./routes/buildingsRoute"))
 // app.use("/auth", require("./routes/authRoute"));
 // app.use("/refresh", require("./routes/refreshRoute"));

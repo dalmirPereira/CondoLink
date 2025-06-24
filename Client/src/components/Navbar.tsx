@@ -39,8 +39,13 @@ export function Navbar() {
             Menu
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-40">
-          <nav className="flex flex-col gap-3">
+        <PopoverContent 
+          className="w-40 border-2"  
+          style={{
+            backgroundColor: "var(--color-neutralWhite)",
+            borderColor: "var(--color-softAqua)"
+          }}>
+          <nav className="flex flex-col gap-3 items-center">
             <Link to="/about" className="hover:text-condoBlue transition-colors">
               About
             </Link>
