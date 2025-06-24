@@ -39,6 +39,7 @@ model User {
   blockId     Int?
   blocks      blocks?    @relation(fields: [blockId], references: [id])
   buildings   buildings? @relation(fields: [buildingId], references: [id])
+  refreshToken String? 
 
   approvedBy      Int?      // foreign key to admin ID
   approvedByUser  User?    @relation("UserApprover", fields: [approvedBy], references: [id])

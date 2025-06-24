@@ -21,6 +21,8 @@ body {
   font-family: var(--font-sans);
   background-color: var(--color-deepTealBlue);
   color: var(--color-neutralWhite);
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -56,7 +58,8 @@ button {
   color: var(--color-neutralWhite);
   padding: 0.6em 1.2em;
   font-weight: 500;
-  border: none;
+  border: 1px solid;
+  border-color: var(--color-softAqua);
   cursor: pointer;
   transition: background-color 0.2s ease;
 }

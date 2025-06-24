@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 const { handleMissingFields } = require('../controllers/registerControllers');
-const { findEmail, createUser } = require('../services/registerServices');
+const { findEmail, createUser } = require('../services/userServices');
 
 //Require needed for uncrypting the password
 const bcrypt = require('bcrypt');

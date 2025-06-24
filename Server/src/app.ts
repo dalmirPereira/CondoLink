@@ -26,9 +26,9 @@ app.use("/", express.static(path.join(__dirname, "/public"))); // Serve static f
 // Public routes
 app.use("/register", require("./routes/registerRoute"));
 app.use("/buildings", require("./routes/buildingsRoute"))
-// app.use("/auth", require("./routes/authRoute"));
+app.use("/auth", require("./routes/authRoute"));
 // app.use("/refresh", require("./routes/refreshRoute"));
-// app.use("/logout", require("./routes/logoutRoute"));
+//app.use("/logout", require("./routes/logoutRoute"));
 
 // JWT verification middleware
 //app.use(verifyJWT);

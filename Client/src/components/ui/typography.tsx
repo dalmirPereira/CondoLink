@@ -18,7 +18,7 @@ export function H1({ children, className = "" }: TypographyProps) {
 export function Paragraph({ children, className = "" }: TypographyProps) {
   return (
     <p
-      className={`text-base sm:text-lg max-w-2xl mb-10 ${className}`}
+      className={` max-w-2xl mb-10 ${className}`}
     >
       {children}
     </p>

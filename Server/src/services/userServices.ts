@@ -21,6 +21,17 @@ export const findEmail = async (email: string): Promise<Email | null> => {
 
 //--------------------------------------------------------------------------------------
 
+export const findUserByEmail = async (email: string): Promise<Email | null> => {
+
+  const result = await prisma.User.findUnique({
+    where: { email: email }
+  });
+
+  return result;
+};
+
+//--------------------------------------------------------------------------------------
+
 interface Resident {
     fullName: string;
     email: string;
@@ -45,9 +56,22 @@ const createUser = async (newResident: Resident): Promise<Resident> => {
   return created;
 };
 
+//--------------------------------------------------------------------------------------
 
+
+const updateUser = async (userId: number, userRefreshToken: string): Promise<User> => {
+
+  const updatedUser = await prisma.User.update({
+    where: { id: userId },
+    data: { refreshToken: userRefreshToken }
+  });
+
+  return updatedUser;
+};
 
 module.exports = {
   findEmail,
-  createUser
+  findUserByEmail,
+  createUser,
+  updateUser
 };

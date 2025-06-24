@@ -6,20 +6,20 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { H1, Paragraph } from "../components/ui/typography";
-import { Toaster, toast } from 'sonner';;
+import { toast } from 'sonner';;
 
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 
 interface Building {
-  id: number;
-  name: string;
+    id: number;
+    name: string;
 }
 
 interface Blocks {
-  id: number;
-  name: string;
-  building_id: number
+    id: number;
+    name: string;
+    building_id: number
 }
 
 export default function SignUp() {
@@ -51,30 +51,30 @@ export default function SignUp() {
         axios
             .get("http://localhost:3000/buildings")
             .then((res) => {
-                
+
                 const buildings = res.data.buildings;
                 const blocks = res.data.blocks;
-                
+
                 setBuildings(buildings);
                 setBlocks(blocks);
             })
             .catch((err) => {
                 console.error("Error loading buildings:", err);
                 toast("Failed to load buildings", {
-                description: "Please try again later.",
+                    description: "Please try again later.",
                 });
             });
     }, []);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
-        
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+
         const { name, value } = e.target;
 
         setForm({
             ...form,
             [name]: name === "buildingId" || name === "blockId"
-            ? (value === "" ? "" : Number(value))
-            : value
+                ? (value === "" ? "" : Number(value))
+                : value
         });
     };
 
@@ -85,7 +85,7 @@ export default function SignUp() {
         const emailIsValid = form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
         if (!emailIsValid) {
             toast("Invalid email", {
-            description: "Please enter a valid email address.",
+                description: "Please enter a valid email address.",
             });
             return;
         }
@@ -106,7 +106,7 @@ export default function SignUp() {
             await axios.post("http://localhost:3000/register/user", data);
 
             toast("Account created", {
-            description: "Thanks for creating a account with us! Your building's Admin will check and approve your request.",
+                description: "Thanks for creating a account with us! Your building's Admin will check and approve your request.",
             });
 
             setForm({
@@ -123,7 +123,7 @@ export default function SignUp() {
         } catch (error: any) {
 
             console.error("Signup error:", error);
-            
+
             // Try to get the message from the API response
             const errorMessage =
                 error?.response?.data?.message ||
@@ -138,28 +138,13 @@ export default function SignUp() {
 
     return (
         <div className="w-full min-h-screen font-sans flex flex-col">
-            
-            <Toaster 
-                position="top-center"
-                toastOptions={{
-                    style: {
-                        background: 'var(--color-softAqua)',  // custom bg color
-                        color: 'white',                           // text color
-                        fontSize: '16px',                         // text size
-                        padding: '16px 24px',                     // padding for bigger size
-                        borderRadius: '8px',                      // rounded corners
-                        boxShadow: '0 4px 14px rgba(0,0,0,0.1)' // subtle shadow
-                    }
-                }}
-            />
-
             <Navbar />
 
             <main className="flex-grow flex flex-col items-center justify-center px-4 sm:px-6 md:px-10 py-10">
                 <div
                     className="bg-white rounded-2xl shadow-md pt-10 pb-0 px-8 max-w-md w-full"
-                    style={{ 
-                        borderColor: "var(--color-softAqua)", 
+                    style={{
+                        borderColor: "var(--color-softAqua)",
                         borderWidth: "2px",
                         color: "var(--color-deepTealBlue)"
                     }}
@@ -201,7 +186,7 @@ export default function SignUp() {
                             />
                         </div>
 
-                        
+
                         <div>
                             <Label htmlFor="buildingId" className="block mb-1 font-semibold">
                                 Your Building
@@ -216,12 +201,12 @@ export default function SignUp() {
                                     onChange={handleChange}
                                     required
                                     className="text-gray-500 w-full rounded-md border px-3 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-softAqua"
-                                    style={{ 
-                                        borderColor: "var(--color-deepTealBlue)", 
+                                    style={{
+                                        borderColor: "var(--color-deepTealBlue)",
                                     }}
                                 >
-                                <option value="" disabled>Select your building</option>
-                                        {buildings.map((building) => (
+                                    <option value="" disabled>Select your building</option>
+                                    {buildings.map((building) => (
                                         <option key={building.id} value={building.id}>
                                             {building.name}
                                         </option>
@@ -229,7 +214,7 @@ export default function SignUp() {
                                 </select>
                             )}
                         </div>
-                        
+
                         {form.buildingId !== "" && blocks.filter(block => block.building_id === form.buildingId).length > 0 && (
                             <div>
                                 <Label htmlFor="blockId" className="block mb-1 font-semibold">
@@ -242,17 +227,17 @@ export default function SignUp() {
                                     onChange={handleChange}
                                     required
                                     className="w-full rounded-md border px-3 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-softAqua"
-                                    style={{ 
-                                        borderColor: "var(--color-deepTealBlue)", 
+                                    style={{
+                                        borderColor: "var(--color-deepTealBlue)",
                                     }}
                                 >
                                     <option value="" disabled>Select your block</option>
-                                    
+
                                     {blocks
                                         .filter(block => block.building_id == form.buildingId)
                                         .map(block => (
                                             <option key={block.id} value={block.id}>
-                                            {block.name}
+                                                {block.name}
                                             </option>
                                         ))
                                     }
@@ -304,15 +289,15 @@ export default function SignUp() {
 
                     <Paragraph className="mt-6 text-center text-color-concreteGray">
                         Already have an account?{" "}
-                    <Link
-                        to="/login"
-                        className="text-condoBlue hover:text-deepTealBlue font-semibold transition"
-                    >
-                        Log in here
-                    </Link>
-                    .
+                        <Link
+                            to="/login"
+                            className="text-condoBlue hover:text-deepTealBlue font-semibold transition"
+                        >
+                            Log in here
+                        </Link>
+                        .
                     </Paragraph>
-                </div>              
+                </div>
             </main>
 
             <Footer />
