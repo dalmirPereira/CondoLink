@@ -6,14 +6,14 @@ import { Footer } from "../components/Footer";
 
 export default function Home() {
   return (
-    <div className="w-full min-h-screen bg-neutralWhite text-deepTealBlue font-sans flex flex-col">
+    <div className="w-full min-h-screen bg-neutralWhite font-sans flex flex-col">
       
       <Navbar />
 
       <main className="flex-grow flex flex-col items-center justify-center text-center px-4 sm:px-6 md:px-10 py-20 bg-color-deepTealBlue text-neutral-white">
         <div className="max-w-2xl space-y-6 animate-fade-in">
           <H1 className="text-4xl md:text-5xl font-bold leading-tight">
-            Simplify your building’s communication.
+            Simplify your building's communication.
           </H1>
 
           <Paragraph className="text-lg md:text-xl text-color-concreteGray">

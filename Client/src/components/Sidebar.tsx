@@ -1,58 +1,76 @@
-import { Link } from "react-router-dom";
-import { Home, Users, Settings, Bell } from "lucide-react";
+import { NavLink } from "react-router-dom";
+import { Home, Users, Wrench } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 
 export function Sidebar() {
-
   const { auth } = useAuth();
 
-  const fullName = auth?.safeUser?.fullName || "";
-  const firstName = fullName.split(" ")[0] || "User";
+  // Function to render sidebar items based on roleCode
+  function renderSidebarItems(roleCode: number) {
+    switch (roleCode) {
+      case 3:
+        return (
+          <>
+            <SidebarItem to="/dashboard" icon={<Home size={24} />} label="Dashboard" />
+            <SidebarItem to="/dashboard/users" icon={<Users size={24} />} label="Users" />
+            <SidebarItem to="/dashboard/subs" icon={<Wrench size={24} />} label="Subcontractors" />
+          </>
+        );
+      case 2:
+        return (
+          <>
+            <SidebarItem to="/dashboard" icon={<Home size={24} />} label="Dashboard" />
+            <SidebarItem to="/dashboard/users" icon={<Users size={24} />} label="Users" />
+            <SidebarItem to="/dashboard/subs" icon={<Wrench size={24} />} label="Subcontractors" />
+          </>
+        );
+      default:
+        return (
+          <>
+            <SidebarItem to="/dashboard" icon={<Home size={24} />} label="Dashboard" />
+            <SidebarItem to="/dashboard/users" icon={<Users size={24} />} label="Users" />
+            <SidebarItem to="/dashboard/subs" icon={<Wrench size={24} />} label="Subcontractors" />
+          </>
+        );
+    }
+  }
 
   return (
     <nav
-      className="flex flex-col gap-6 text-base p-6 h-full bg-white border rounded-xl"
+      className="flex flex-col items-center gap-6 p-4 w-16 bg-white border h-full rounded-xl"
       style={{ borderColor: "var(--color-softAqua)", borderWidth: "3px" }}
     >
-
-      <div className="mb-4">
-        <p className="font-bold text-2xl"
-          style={{color: "var(--color-deepTealBlue)"}}>
-          Hi, {firstName} 👋
-        </p>
-      </div>
-
-      <Link
-        to="/dashboard"
-        className="flex items-center gap-2 text-deepTealBlue hover:text-softAqua transition"
-      >
-        <Home size={18} />
-        Dashboard
-      </Link>
-
-      <Link
-        to="/dashboard/users"
-        className="flex items-center gap-2 text-deepTealBlue hover:text-softAqua transition"
-      >
-        <Users size={18} />
-        Users
-      </Link>
-
-      <Link
-        to="/dashboard/notifications"
-        className="flex items-center gap-2 text-deepTealBlue hover:text-softAqua transition"
-      >
-        <Bell size={18} />
-        Notifications
-      </Link>
-
-      <Link
-        to="/dashboard/settings"
-        className="flex items-center gap-2 text-deepTealBlue hover:text-softAqua transition"
-      >
-        <Settings size={18} />
-        Settings
-      </Link>
+      {renderSidebarItems(auth.roleCode)}
     </nav>
+  );
+}
+
+function SidebarItem({ to, icon, label }: { to: string; icon: React.ReactNode; label: string }) {
+  return (
+    <div className="relative group w-full flex justify-center">
+      <NavLink
+        to={to}
+        end
+        className="flex flex-col items-center"
+        style={({ isActive }) => ({
+          color: isActive ? "var(--color-softAqua)" : "var(--color-deepTealBlue)",
+        })}
+      >
+        {icon}
+      </NavLink>
+
+      {/* Label shown on hover */}
+      <span
+        className="absolute left-14 top-1/2 -translate-y-1/2 px-2 py-1 rounded shadow opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity duration-200 bg-white"
+        style={{
+          color: "var(--color-deepTealBlue)",
+          backgroundColor: "var(--color-white)",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.25)",
+          border: "1px solid rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        {label}
+      </span>
+    </div>
   );
 }

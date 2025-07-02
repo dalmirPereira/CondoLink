@@ -1,0 +1,6 @@
+20250701	19:12:35	14e50bbf-5c31-4767-be52-8fc21b4c6eb7	SyntaxError: Expected double-quoted property name in JSON at position 49 (line 5 column 1)
+20250701	19:13:14	aceab404-7e1b-4b36-8774-5b5ec1651fff	SyntaxError: Expected double-quoted property name in JSON at position 55 (line 5 column 1)
+20250701	19:14:49	1b3e4912-b3d1-4ceb-9f91-ea11ab843582	SyntaxError: Expected double-quoted property name in JSON at position 55 (line 5 column 1)
+20250701	19:15:50	2be7ba02-cd35-4016-9fc5-07469d1c9fe2	SyntaxError: Expected double-quoted property name in JSON at position 49 (line 5 column 1)
+20250702	11:39:48	51fb0afa-1bd4-41bd-93ea-c3cbe85cc632	TypeError: req.roles.map is not a function
+20250702	11:39:48	e2af8108-43bb-4e21-8e7b-e67ee66746fb	TypeError: req.roles.map is not a function

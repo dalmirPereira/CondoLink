@@ -1,16 +1,23 @@
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Button } from "./ui/button";
+import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import Logo from "../assets/CondoLink.png"
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import { toast } from "sonner";
+import { LoginModal } from './LoginModal';
 
 export function Navbar() {
   const { logout } = useAuth();
-  const location = useLocation();
   const navigate = useNavigate();
+  const [loginOpen, setLoginOpen] = useState(false); //LoginModal
 
+  const location = useLocation(); //Rounte filter
   const isDashboard = location.pathname.startsWith("/dashboard");
+
+  const { auth } = useAuth(); //User name filter
+  const fullName = auth?.fullName || "";
+  const firstName = fullName.split(" ")[0] || "User";
 
   const handleLogout = () => {
     logout();
@@ -21,25 +28,12 @@ export function Navbar() {
     <header className="w-full flex items-center justify-between px-6 py-4 bg-white border-b border-concreteGray shadow-sm">
 
       {/* Logo and Title */}
-      <Link to="/" className="flex items-center justify-center gap-3">
-        <img src={Logo} alt="CondoLink Logo" className="h-12 w-auto" />
-      </Link>
+      <img src={Logo} alt="CondoLink Logo" className=" flex items-center justify-center gap-3 h-12 w-auto" />
 
       {!isDashboard ? (
         <>
           < nav className="hidden md:flex gap-6 text-sm font-medium">
-            <Link
-              to="/about"
-              className="px-4 py-2 rounded-md text-base font-medium text-deepTealBlue hover:bg-deepTealBlue hover:text-neutralWhite transition-colors duration-200"
-            >
-              About
-            </Link>
-            <Link
-              to="/login"
-              className="px-4 py-2 rounded-md text-base font-big text-deepTealBlue hover:bg-deepTealBlue hover:text-neutralWhite transition-colors duration-200"
-            >
-              Login
-            </Link>
+            <Button onClick={() => setLoginOpen(true)}>Login</Button>
             <Button onClick={() => navigate("/signup")}>Sign Up</Button>
           </nav>
 
@@ -57,12 +51,7 @@ export function Navbar() {
                 borderColor: "var(--color-softAqua)"
               }}>
               <nav className="flex flex-col gap-3 items-center">
-                <Link to="/about" className="hover:text-condoBlue transition-colors">
-                  About
-                </Link>
-                <Link to="/login" className="hover:text-condoBlue transition-colors">
-                  Login
-                </Link>
+                <Button onClick={() => setLoginOpen(true)}>Login</Button>
                 <Button onClick={() => navigate("/signup")}>Sign Up</Button>
               </nav>
             </PopoverContent>
@@ -70,15 +59,19 @@ export function Navbar() {
         </>
       ) : (
         <div className="flex items-center gap-6">
+          <p className="font-bold text-base"
+            style={{ color: "var(--color-deepTealBlue)" }}>
+            Hi, {firstName} 👋
+          </p>
           <Button variant="outline" onClick={handleLogout}>
             Logout
           </Button>
         </div>
       )}
 
-
-
+      <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
 
     </header >
+
   );
 }

@@ -15,7 +15,7 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
         return <Navigate to="/" replace />;
     }
 
-    if (!allowedRoles.includes(auth.safeUser.roleCode)) {
+    if (!allowedRoles.includes(auth.roleCode)) {
         // Logged in but doesn't have permission
         return <Navigate to="/unauthorized" replace />;
     }

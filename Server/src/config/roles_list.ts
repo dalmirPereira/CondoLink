@@ -1,11 +1,7 @@
-type Roles = {
-  Admin: number;
-  User: number;
-};
+const ROLES_LIST = {
+    "Admin": 3,
+    "Subs" : 2,
+    "User": 1
+}
 
-const ROLESLIST: Roles = {
-  Admin: 5150,
-  User: 2001,
-};
-
-module.exports = ROLESLIST;
+module.exports = ROLES_LIST;

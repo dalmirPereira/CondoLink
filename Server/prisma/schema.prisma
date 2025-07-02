@@ -33,8 +33,10 @@ model User {
   password    String
   fullName    String
   roleCode    Int
+  unit        String?
   companyName String?
   phone       String?
+  serviceType Int?
   buildingId  Int?
   blockId     Int?
   blocks      blocks?    @relation(fields: [blockId], references: [id])
@@ -45,4 +47,9 @@ model User {
   approvedByUser  User?    @relation("UserApprover", fields: [approvedBy], references: [id])
   approvedUsers   User[]   @relation("UserApprover")  // reverse relation
 
+}
+
+model ServiceCategory {
+  id   Int    @id @default(autoincrement())
+  name String @unique
 }

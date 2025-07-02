@@ -3,8 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 
 interface DecodedToken {
   UserInfo: {
-    username: string;
-    roles: number[];
+    roles: number;
   };
 }
 
@@ -20,7 +19,6 @@ const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const decoded = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as DecodedToken;
 
-    (req as any).username = decoded.UserInfo.username;
     (req as any).roles = decoded.UserInfo.roles;
 
     next();

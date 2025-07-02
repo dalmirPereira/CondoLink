@@ -12,6 +12,7 @@ interface Resident {
   password: string;
   buildingId: number;
   blockId: number;
+  unit: string;
 }
 
 const router = Router();
@@ -36,7 +37,7 @@ router.post("/user", async (
   const duplicate = await findEmail(newResident.email);
   console.log(duplicate);
   if (duplicate && duplicate.length>0) {
-    return res.status(409).json({ message: 'Book Title already registered. Choose another title.' })
+    return res.status(409).json({ message: 'Email already registered. Choose another email.' })
   }; //Conflict 
   
   try {

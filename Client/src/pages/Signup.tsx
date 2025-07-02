@@ -32,6 +32,7 @@ export default function SignUp() {
         confirmPassword: string;
         buildingId: number | "";
         blockId: number | "";
+        unit: string;
     };
 
     const [form, setForm] = useState<FormData>({
@@ -40,7 +41,8 @@ export default function SignUp() {
         password: "",
         confirmPassword: "",
         buildingId: "",
-        blockId: ""
+        blockId: "",
+        unit: "",
     });
 
     //Gets possible buildings and blocks to enrol 
@@ -95,6 +97,7 @@ export default function SignUp() {
             email: form.email,
             password: form.password,
             buildingId: form.buildingId,
+            unit: form.unit,
         };
 
         // Only add blockId if there are blocks for the building
@@ -115,10 +118,11 @@ export default function SignUp() {
                 password: "",
                 confirmPassword: "",
                 buildingId: "",
-                blockId: ""
+                blockId: "",
+                unit: ""
             });
 
-            navigate("/home");
+            navigate("/");
 
         } catch (error: any) {
 
@@ -244,6 +248,23 @@ export default function SignUp() {
                                 </select>
                             </div>
                         )}
+
+                        <div>
+                            <Label htmlFor="unit" className="block mb-1 font-semibold">
+                                Unit
+                            </Label>
+                            <Input
+                                type="text"
+                                id="unit"
+                                name="unit"
+                                value={form.unit}
+                                onChange={handleChange}
+                                required
+                                placeholder="unit number"
+                                className="w-full"
+                                style={{ borderColor: "var(--color-deepTealBlue)" }}
+                            />
+                        </div>
 
                         <div>
                             <Label htmlFor="password" className="block mb-1 font-semibold">

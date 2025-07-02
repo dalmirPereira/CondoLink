@@ -104,7 +104,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
 			setAuth(userData);
 			
-			return { success: true };
+			return { success: true, ...userData };
 		} catch (err: any) {
 			return { success: false, message: err.response?.data?.message || err.message };
 		}

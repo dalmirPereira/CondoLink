@@ -25,6 +25,7 @@ interface User {
     companyName: string;
     phone: string;
     approvedBy: number;
+    unit: string;
     refreshToken: string
 }
 
@@ -53,7 +54,7 @@ router.post('/', async (
     console.log(user)
     //check if approved by admin
     console.log(user.approvedBy)
-    if (!user?.approvedBy) {
+    if (!user?.approvedBy && user.roleCode!=3) {
         return res.status(401)
             .json({ message: 'Unauthorized access. Your user needs to be approved by your building' });
     }
@@ -77,6 +78,8 @@ router.post('/', async (
                 buildingId: user.buildingId,
                 blockId: user.blockId,
                 companyName: user.companyName,
+                aprovedBy: user.approvedBy,
+                unit: user.unit,
                 phone: user.phone,
                 accessToken
             };
@@ -93,7 +96,7 @@ router.post('/', async (
                 // secure: false,      // For local development without HTTPS (only use when testing locally)
                 maxAge: 24 * 60 * 60 * 1000 // Cookie expiration time (1 day in milliseconds)
             });
-            res.json({ safeUser });
+            res.json({ ...safeUser });
 
         } catch (err: any) {
             res.status(500).json({ message: err.message });

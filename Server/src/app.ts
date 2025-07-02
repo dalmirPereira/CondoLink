@@ -30,10 +30,11 @@ app.use("/auth", require("./routes/authRoute"));
 // app.use("/refresh", require("./routes/refreshRoute"));
 //app.use("/logout", require("./routes/logoutRoute"));
 
-// JWT verification middleware
-//app.use(verifyJWT);
+//JWT verification middleware
+app.use(verifyJWT);
 
 // Protected routes with role verification
+app.use("/dashboard/admin", verifyRoles(ROLES_LIST.Admin), require("./routes/dashboardRoutes/adminRoutes"));
 // app.use("/user", verifyRoles(ROLES_LIST.User), require("./routes/userRoutes"));
 // app.use("/admin", verifyRoles(ROLES_LIST.Admin), require("./routes/adminRoutes"));
 // app.use("/books", verifyRoles(ROLES_LIST.Admin, ROLES_LIST.User), require("./routes/bookRoute"));
