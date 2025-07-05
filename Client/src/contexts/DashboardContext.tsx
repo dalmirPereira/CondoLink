@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useRef } from "react";
 import { useAuth } from "./AuthContext";
 
 interface User {
@@ -53,14 +53,16 @@ interface DashboardProviderProps {
 }
 
 export const DashboardProvider = ({ children }: DashboardProviderProps) => {
-  const { axiosInstance, auth } = useAuth()
+  const { axiosInstance, auth, logout } = useAuth();
 
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
 
-  // Fetch dashboard data using the current auth info
-  const getDashboardData = async () => {
-    if (!auth) return;
+  const isFetching = useRef(false);
 
+  const getDashboardData = async () => {
+    if (!auth || isFetching.current) return;
+
+    isFetching.current = true;
     try {
       const response = await axiosInstance.post<DashboardData>(
         "/dashboard/admin",
@@ -71,25 +73,26 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
       setDashboardData(null);
+      logout();
+    } finally {
+      isFetching.current = false;
     }
   };
 
-  // Auto-fetch dashboard data on auth changes (login/logout/token refresh)
   useEffect(() => {
     if (auth) {
       getDashboardData();
     } else {
       setDashboardData(null);
     }
-  }, [auth]); // run when auth changes
-
+  }, [auth]);
 
   return (
     <DashboardContext.Provider value={{ dashboardData, getDashboardData, setDashboardData }}>
       {children}
     </DashboardContext.Provider>
   );
-}
+};
 
 export function useDashboard() {
   const context = useContext(DashboardContext);

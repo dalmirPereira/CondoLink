@@ -13,7 +13,7 @@ export function Navbar() {
   const [loginOpen, setLoginOpen] = useState(false); //LoginModal
 
   const location = useLocation(); //Rounte filter
-  const isDashboard = location.pathname.startsWith("/dashboard");
+  const isDashboard = location.pathname.startsWith("/admin");
 
   const { auth } = useAuth(); //User name filter
   const fullName = auth?.fullName || "";

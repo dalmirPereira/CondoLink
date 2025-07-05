@@ -5,6 +5,7 @@ import { Footer } from "../components/Footer";
 import { Outlet } from "react-router-dom"; //nested routes
 
 export default function Dashboard() {
+  
   return (
     <div className="flex flex-col h-screen">
       <Navbar />

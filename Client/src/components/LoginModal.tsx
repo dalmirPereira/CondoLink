@@ -51,7 +51,7 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
             toast("Login successful", { description: "Welcome back!" });
             setTimeout(() => {
                 onOpenChange(false);
-                navigate("/dashboard");
+                navigate("/admin");
             }, 1500);
         } else {
             toast("Login failed", { description: result.message || "Please try again." });

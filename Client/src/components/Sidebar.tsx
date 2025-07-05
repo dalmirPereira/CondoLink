@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Home, Users, Wrench } from "lucide-react";
+import { Home, Users, Wrench, UserCog  } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 
 export function Sidebar() {
@@ -8,28 +8,25 @@ export function Sidebar() {
   // Function to render sidebar items based on roleCode
   function renderSidebarItems(roleCode: number) {
     switch (roleCode) {
-      case 3:
+      case 3: //admin
         return (
           <>
-            <SidebarItem to="/dashboard" icon={<Home size={24} />} label="Dashboard" />
-            <SidebarItem to="/dashboard/users" icon={<Users size={24} />} label="Users" />
-            <SidebarItem to="/dashboard/subs" icon={<Wrench size={24} />} label="Subcontractors" />
+            <SidebarItem to="/admin" icon={<Home size={24} />} label="Dashboard" />
+            <SidebarItem to="/admin/residents" icon={<Users size={24} />} label="Residents" />
+            <SidebarItem to="/admin/subs" icon={<UserCog size={24} />} label="Subcontractors" />
+            <SidebarItem to="/admin/maintenance" icon={<Wrench size={24} />} label="Maintenance" />
           </>
         );
-      case 2:
+      case 2: //subcontractors
         return (
           <>
             <SidebarItem to="/dashboard" icon={<Home size={24} />} label="Dashboard" />
-            <SidebarItem to="/dashboard/users" icon={<Users size={24} />} label="Users" />
-            <SidebarItem to="/dashboard/subs" icon={<Wrench size={24} />} label="Subcontractors" />
           </>
         );
       default:
         return (
           <>
             <SidebarItem to="/dashboard" icon={<Home size={24} />} label="Dashboard" />
-            <SidebarItem to="/dashboard/users" icon={<Users size={24} />} label="Users" />
-            <SidebarItem to="/dashboard/subs" icon={<Wrench size={24} />} label="Subcontractors" />
           </>
         );
     }

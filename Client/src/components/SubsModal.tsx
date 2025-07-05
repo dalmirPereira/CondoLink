@@ -13,7 +13,7 @@ interface SubcontractorForm {
     companyName: string;
     phone: string;
     email: string;
-    serviceType: number;
+    serviceType: number | "";
     password: string;
 }
 
@@ -29,14 +29,16 @@ export function SubsModal({ open, onOpenChange }: SubsModalProps) {
 
     const services = dashboardData?.services || [];
 
-    const [form, setForm] = useState<SubcontractorForm>({
+    const initialFormState: SubcontractorForm = {
         fullName: "",
         companyName: "",
         phone: "",
         email: "",
-        serviceType: 0,
+        serviceType: "",
         password: "",
-    });
+    };
+
+    const [form, setForm] = useState<SubcontractorForm>(initialFormState);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -53,6 +55,11 @@ export function SubsModal({ open, onOpenChange }: SubsModalProps) {
 
         if (!form.password) {
             toast("Password required", { description: "Please enter a password." });
+            return;
+        }
+
+        if (!form.serviceType) {
+            toast("Category required", { description: "Please select a category." });
             return;
         }
 
@@ -79,6 +86,9 @@ export function SubsModal({ open, onOpenChange }: SubsModalProps) {
 
             if (response.data.success) {
                 toast("Subcontractor", { description: "Added with success" });
+
+                setForm(initialFormState);
+
                 setTimeout(() => {
                     onOpenChange(false);
                 }, 1500);
@@ -88,7 +98,7 @@ export function SubsModal({ open, onOpenChange }: SubsModalProps) {
 
         } catch (err: any) {
             const serverMessage = err.response?.data?.message || "Failed to add new subcontrator.";
-            alert(serverMessage);
+            toast("Subcontractor failed", { description: serverMessage });
         }
     };
 
@@ -174,7 +184,7 @@ export function SubsModal({ open, onOpenChange }: SubsModalProps) {
                             id="serviceType"
                             name="serviceType"
                             value={form.serviceType}
-                            onChange={e => setForm(prev => ({ ...prev, serviceType: Number(e.target.value) }))}
+                            onChange={e => setForm(prev => ({ ...prev, serviceType: e.target.value === "" ? "" : Number(e.target.value) }))}
                             required
                             className="border rounded px-2 py-1 w-full"
                         >

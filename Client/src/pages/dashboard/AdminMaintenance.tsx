@@ -34,7 +34,7 @@ export default function DashboardHome() {
 
   return (
     <div className="p-6 rounded-lg bg-white shadow-md" style={{ color: "var(--color-deepTealBlue)" }}>
-      <h1 className="text-3xl font-bold mb-4">Subcontractors Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-4">Subcontractors</h1>
       <p className="text-base leading-relaxed mb-6">
         This is your central hub for managing subcontractors.
       </p>

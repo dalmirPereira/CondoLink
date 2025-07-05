@@ -10,8 +10,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 interface Login {
-  email: string;
-  password: string;
+    email: string;
+    password: string;
 }
 
 interface User {
@@ -30,11 +30,7 @@ interface User {
 }
 
 //a POST request to login user.
-router.post('/', async (
-  req: Request<{}, {}, Login>, 
-  res: Response
-): Promise<void> => {
-
+router.post('/', async (req: Request<{}, {}, Login>, res: Response): Promise<void> => {
     const { email, password } = req.body;
 
     //check if they existe
@@ -44,17 +40,16 @@ router.post('/', async (
     }
 
     //get user information
-    const user: User | null = await findUserByEmail(email); 
-    
+    const user: User | null = await findUserByEmail(email);
+
     //if user doesnt exist
     if (!user) {
         return res.status(401)
             .json({ message: 'Invalid username or email.' });
-    } 
-    console.log(user)
+    }
+
     //check if approved by admin
-    console.log(user.approvedBy)
-    if (!user?.approvedBy && user.roleCode!=3) {
+    if (!user?.approvedBy && user.roleCode != 3) {
         return res.status(401)
             .json({ message: 'Unauthorized access. Your user needs to be approved by your building' });
     }
@@ -67,8 +62,7 @@ router.post('/', async (
             const { accessToken, refreshToken } = await generateAuthTokens(user.email, user.id, user.roleCode);
 
             //Save the refreshToken in the DB:
-            user.refreshToken = refreshToken;
-            const result = await updateUser(user.id, user.refreshToken)
+            const result = await updateUser(user.id, refreshToken)
 
             const safeUser = {
                 id: user.id,
@@ -83,12 +77,12 @@ router.post('/', async (
                 phone: user.phone,
                 accessToken
             };
-
+            console.log(refreshToken)
             // Why use cookies to send the refresh token?
             // Storing the refresh token in an httpOnly cookie protects it from being accessed or manipulated by JavaScript in the browser, 
             // mitigating risks such as cross-site scripting (XSS) attacks. It also allows automatic inclusion in requests to the backend 
             // for token refresh operations without exposing it to the client-side code.
-            res.cookie('jwt', refreshToken, { 
+            res.cookie('jwt', refreshToken, {
                 httpOnly: true,       // Cookie not accessible via JavaScript (protects against XSS attacks)
                 sameSite: 'None',     // Allow the cookie to be sent with cross-site requests (necessary for frontend and backend on different origins)
                 secure: true,         // Send cookie only over HTTPS connections (important for security in production)
@@ -101,11 +95,64 @@ router.post('/', async (
         } catch (err: any) {
             res.status(500).json({ message: err.message });
         }
-            
+
     } else {
         res.status(401).json({ message: 'Invalid Password.' });
     }
-           
+
 });
+
+
+//a GET request to refresh access to login user.
+router.get('/refresh', async (req: Request, res: Response): Promise<void> => {
+    const cookies = req.cookies;
+
+    if (!cookies?.jwt) {
+        return res.status(401).json({ message: 'Refresh token missing' });
+    }
+
+    const refreshToken = cookies.jwt; //access cookie sent as 'jwt' on login.
+
+    try {
+        // Verify refresh token
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as jwt.JwtPayload;
+
+        // Find user by ID from decoded token
+        const user: User | null = await findUserByEmail(decoded.UserInfo.email);
+        if (!user) {
+            return res.status(403).json({ message: 'User not found' });
+        }
+
+        // Check if refresh token matches the one in DB
+        if (user.refreshToken !== refreshToken) {
+           
+            return res.status(403).json({ message: 'Invalid refresh token' });
+        }
+
+        
+
+        // Generate new tokens
+        const { accessToken, refreshToken: newRefreshToken } = await generateAuthTokens(user.email, user.id, user.roleCode);
+
+        // Update refresh token in DB (optional but recommended for rotation)
+        await updateUser(user.id, newRefreshToken);
+
+        // Set new refresh token in cookie
+        res.cookie('jwt', newRefreshToken, {
+            httpOnly: true,
+            sameSite: 'None',
+            secure: true,
+            maxAge: 24 * 60 * 60 * 1000 // 1 day
+        });
+        console.log("accessToken updated")
+        // Send new access token
+        res.json({ accessToken });
+
+    } catch (err: any) {
+        console.error(err);
+        res.status(403).json({ message: 'Invalid or expired refresh token' });
+    }
+});
+
 
 module.exports = router;

@@ -7,9 +7,10 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Unauthorized from "./pages/Unauthorized";
 
-import DashboardHome from "./pages/dashboard/DashboardHome";
-import DashboardUsers from "./pages/dashboard/DashboardUsers";
-import DashboardSubs from "./pages/dashboard/DashboardSubs";
+import AdminHome from "./pages/dashboard/AdminHome";
+import AdminResidents from "./pages/dashboard/AdminResidents";
+import AdminSubs from "./pages/dashboard/AdminSubs";
+import AdminMaintenance from "./pages/dashboard/AdminMaintenance"
 
 function AppRouter() {
   return (
@@ -22,18 +23,18 @@ function AppRouter() {
         <Route path="/unauthorized" element={<Unauthorized />} />
 
         {/*Protected Routes*/}
-        <Route path="/dashboard"
+        <Route path="/admin"
           element={
-            <ProtectedRoute allowedRoles={[1, 2, 3]}>
+            <ProtectedRoute allowedRoles={[3]}>
               <Dashboard />
             </ProtectedRoute>
           }
         >
-
           {/* Nested routes */}
-          <Route index element={<DashboardHome />} />
-          <Route path="users" element={<DashboardUsers />} />
-          <Route path="subs" element={<DashboardSubs />} />
+          <Route index element={<AdminHome />} />
+          <Route path="residents" element={<AdminResidents />} />
+          <Route path="subs" element={<AdminSubs />} />
+          <Route path="maintenance" element={<AdminMaintenance />}/>
         </Route>
 
       </Routes>

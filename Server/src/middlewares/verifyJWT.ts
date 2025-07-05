@@ -23,7 +23,7 @@ const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
 
     next();
   } catch (err) {
-    return res.sendStatus(403); // Invalid token
+    return res.status(401).json({ message: "Unauthorized" }); //token invalid or expired
   }
 };
 

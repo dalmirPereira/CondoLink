@@ -60,9 +60,9 @@ export default function DashboardHome() {
 
   return (
     <div className="p-6 rounded-lg bg-white shadow-md" style={{ color: "var(--color-deepTealBlue)" }}>
-      <h1 className="text-3xl font-bold mb-4">Users Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-4">Residents</h1>
       <p className="text-base leading-relaxed mb-6">
-        This is your central hub for managing users.
+        This is your central hub for managing residents.
       </p>
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 mb-4">

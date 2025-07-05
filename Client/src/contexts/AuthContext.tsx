@@ -1,31 +1,31 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from "react";
 import axios from "axios";
 
 // The structure of your auth state
 export interface AuthState {
-  id: number;
-  email: string;
-  fullName: string;
-  roleCode: number;
-  buildingId: number;
-  blockId: number;
-  companyName: string;
-  phone: string;
-  accessToken: string;
+	id: number;
+	email: string;
+	fullName: string;
+	roleCode: number;
+	buildingId: number;
+	blockId: number;
+	companyName: string;
+	phone: string;
+	accessToken: string;
 }
 
 // Login input type
 interface LoginInput {
-  email: string;
-  password: string;
+	email: string;
+	password: string;
 }
 
 // What the context provides
 interface AuthContextType {
-  auth: AuthState | null;
-  login: (credentials: LoginInput) => Promise<{ success: boolean; message?: string }>;
-  logout: () => void;
-  axiosInstance: typeof axios;
+	auth: AuthState | null;
+	login: (credentials: LoginInput) => Promise<{ success: boolean; message?: string }>;
+	logout: () => void;
+	axiosInstance: typeof axios;
 }
 
 // Create the context
@@ -33,7 +33,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Props type for the provider
 interface AuthProviderProps {
-  children: ReactNode;
+	children: ReactNode;
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const [auth, setAuth] = useState<AuthState | null>(() => {
 		const stored = localStorage.getItem("auth");
 		return stored ? (JSON.parse(stored) as AuthState) : null;
-  	});
+	});
 
 	// Sync auth state to localStorage
 	useEffect(() => {
@@ -53,22 +53,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	}, [auth]);
 
 	// Axios instance with interceptors (to use the same baseURL across many requests)
-	const axiosInstance = axios.create({
+	const axiosInstance = useMemo(() => axios.create({
 		baseURL: "http://localhost:3000",
-		withCredentials: true, // send cookies
-	});
+		withCredentials: true
+	}), []);
 
-	// Automatically refresh token on 401
-	useEffect(() => {
-		const interceptor = axiosInstance.interceptors.response.use(
-			response => response,
-			async error => {
-				const originalRequest = error.config;
+	axiosInstance.interceptors.response.use(
+		response => response,
+		async error => {
+			const originalRequest = error.config;
+			
+			if (error.response?.status === 401 && !originalRequest._retry && auth) {
 
-				if (error.response?.status === 401 && !originalRequest._retry && auth) {
-					originalRequest._retry = true;
+				console.log("Refreshing token...");
+				originalRequest._retry = true;
 				try {
-					const res = await axiosInstance.get("/refresh");
+					const res = await axiosInstance.get("/auth/refresh");
 					const newAccessToken = res.data.accessToken;
 
 					const updatedAuth = { ...auth, accessToken: newAccessToken };
@@ -76,34 +76,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 					localStorage.setItem("auth", JSON.stringify(updatedAuth));
 
 					// retry original request with new token
-					originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+					originalRequest.headers = {
+						...originalRequest.headers,
+						Authorization: `Bearer ${newAccessToken}`,
+					};
+
 					return axiosInstance(originalRequest);
-					
+
 				} catch (refreshErr) {
-					logout();
 					return Promise.reject(refreshErr);
 				}
-				}
-
-				return Promise.reject(error);
 			}
-		);
 
-		return () => {
-		axiosInstance.interceptors.response.eject(interceptor);
-		};
-	}, [auth]);
+			return Promise.reject(error);
+		}
+	);
 
 	// Login function
 	const login = async ({ email, password }: LoginInput): Promise<{ success: boolean; message?: string }> => {
 		try {
 			const response = await axiosInstance.post("/auth", { email, password });
 			const userData = response.data;
-			
+
 			//console.log(userData);
 
 			setAuth(userData);
-			
+
 			return { success: true, ...userData };
 		} catch (err: any) {
 			return { success: false, message: err.response?.data?.message || err.message };
@@ -118,7 +116,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
 	return (
 		<AuthContext.Provider value={{ auth, login, logout, axiosInstance }}>
-		{children}
+			{children}
 		</AuthContext.Provider>
 	);
 };
@@ -126,12 +124,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
 // Hook to access auth context
 export const useAuth = (): AuthContextType => {
-  
-	const context = useContext(AuthContext);
-  
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
 
-  return context;
+	const context = useContext(AuthContext);
+
+	if (!context) {
+		throw new Error("useAuth must be used within an AuthProvider");
+	}
+
+	return context;
 };
