@@ -44,6 +44,8 @@ export function SignUpModal({ open, onOpenChange, userToEdit }: SignUpModalProps
     const isEditMode = !!userToEdit; // 👈 detect edit mode
 
     useEffect(() => {
+        if (!open) return; // do nothing if modal is closed
+
         const fetchBuildings = async () => {
             try {
                 const res = await axiosInstance.get("/buildings");
@@ -58,7 +60,7 @@ export function SignUpModal({ open, onOpenChange, userToEdit }: SignUpModalProps
         };
 
         fetchBuildings();
-    }, []);
+    }, [open]);
 
     // Pre-fill form if editing
     useEffect(() => {
@@ -129,7 +131,7 @@ export function SignUpModal({ open, onOpenChange, userToEdit }: SignUpModalProps
         try {
             if (isEditMode) {
                 // Update existing user
-                await axiosInstance.put(`/dashboard/admin/updateUser/${userToEdit.id}`, data, {
+                await axiosInstance.put(`/admin/updateUser/${userToEdit.id}`, data, {
                     headers: { Authorization: `Bearer ${axiosInstance.defaults.headers.Authorization}` },
                 });
                 toast.success("Resident updated", {

@@ -2,15 +2,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { AuthProvider } from "./contexts/AuthContext.tsx";
-import { DashboardProvider } from "./contexts/DashboardContext.tsx";
+import IndexContext from './contexts/index.tsx';
+
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AuthProvider>
-      <DashboardProvider>
+    <IndexContext>
         <App />
-      </DashboardProvider>
-    </AuthProvider>
+    </IndexContext>
   </StrictMode>,
 );

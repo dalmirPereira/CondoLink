@@ -12,6 +12,10 @@ import AdminResidents from "./pages/dashboard/AdminResidents";
 import AdminSubs from "./pages/dashboard/AdminSubs";
 import AdminMaintenance from "./pages/dashboard/AdminMaintenance"
 
+import SubsHome from "./pages/dashboard/SubsHome";
+
+import ResidentsHome from "./pages/dashboard/ResidentsHome";
+
 function AppRouter() {
   return (
     <BrowserRouter>
@@ -30,7 +34,7 @@ function AppRouter() {
             </ProtectedRoute>
           }
         >
-          {/* Nested routes */}
+          {/* Nested routes to Admin */}
           <Route
             path="admin"
             element={
@@ -44,6 +48,31 @@ function AppRouter() {
             <Route path="subs" element={<AdminSubs />} />
             <Route path="maintenance" element={<AdminMaintenance />} />
           </Route>
+
+          {/* Nested routes to Subcontractor */}
+          <Route
+            path="subs"
+            element={
+              <ProtectedRoute allowedRoles={[2]}>
+                <Outlet />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<SubsHome />} />
+          </Route>
+
+          {/* Nested routes to Residents */}
+          <Route
+            path="resident"
+            element={
+              <ProtectedRoute allowedRoles={[1]}>
+                <Outlet />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<ResidentsHome />} />
+          </Route>
+
 
         </Route>
       </Routes>

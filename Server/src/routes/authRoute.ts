@@ -49,11 +49,11 @@ router.post('/', async (req: Request<{}, {}, Login>, res: Response): Promise<voi
     }
 
     //check if approved by admin
-    if (!user?.approvedBy && user.roleCode != 3) {
+    if (!user?.approvedBy && user.roleCode != 3 && user.roleCode != 2) {
         return res.status(401)
             .json({ message: 'Unauthorized access. Your user needs to be approved by your building' });
     }
-
+    
     //if user name found then compare the password 
     const match = await bcrypt.compare(password, user.password);
 
@@ -77,7 +77,7 @@ router.post('/', async (req: Request<{}, {}, Login>, res: Response): Promise<voi
                 phone: user.phone,
                 accessToken
             };
-            console.log(refreshToken)
+            
             // Why use cookies to send the refresh token?
             // Storing the refresh token in an httpOnly cookie protects it from being accessed or manipulated by JavaScript in the browser, 
             // mitigating risks such as cross-site scripting (XSS) attacks. It also allows automatic inclusion in requests to the backend 

@@ -4,117 +4,19 @@ import {
   deleteMaintenance,
   updateMaintenance,
   approveUser,
-  findUsers,
-  findBuildings,
-  findBlocks,
   addSub,
-  getServices,
-  getMaintenance,
   addMaintenance,
   deleteUser,
   updateUser
-} from '../../services/dashboardServices/adminServices'
-const { handleMissingFields, isMissing } = require('../../controllers/registerControllers');
-const { findEmail } = require('../../services/userServices');
+} from '../services/adminServices'
+const { handleMissingFields, isMissing } = require('../controllers/registerControllers');
+const { findEmail } = require('../services/userServices');
 
 //Require needed for uncrypting the password
 const bcrypt = require('bcrypt');
-const { saltRound } = require('../../config/saltRound')
+const { saltRound } = require('../config/saltRound')
 
 const router = Router();
-
-//-------------------- a POST request to get dashboard data -----------------------
-interface User {
-  id: number;
-  fullName: string;
-  email: string;
-  unit: string;
-  roleCode: number;
-  companyName: string | null;
-  serviceType: number | null;
-  phone: string | null;
-  buildingId: number | null;
-  blockId: number | null;
-  approvedBy: number | null;
-}
-
-interface Building {
-  id: number;
-  name: string;
-  address: string | null;
-  code: string;
-}
-
-interface Block {
-  id: number;
-  name: string;
-  buildingId: number;
-}
-
-interface Service {
-  id: number;
-  name: string;
-}
-
-interface Maintenance {
-  id: number;
-  task: string;
-  buildingId: number;
-  blockId: number;
-  subcontractor: number | null;
-  category: number;
-  status: string;
-  comment: string | null;
-  created_at: string;
-  dueTo: string;
-}
-
-interface DashboardData {
-  users: User[];
-  buildings: Building[];
-  blocks: Block[];
-  services: Service[];
-  maintenance: Maintenance[];
-}
-
-router.post('/', async (req: Request, res: Response): Promise<void> => {
-  const { id, roleCode, buildingId } = req.body;
-
-  //check if they existe
-  if (!id || !roleCode || !buildingId) {
-    res.status(400)
-      .json({ message: 'id, roleCod and buildingId are required.' });
-    return;
-  }
-
-
-  try {
-    const dashboardData: DashboardData = {
-      users: [],
-      buildings: [],
-      blocks: [],
-      services: [],
-      maintenance: []
-    };
-
-    // Fetch users only if the requester is an admin (roleCode === 3)
-    if (roleCode === 3) {
-      dashboardData.users = await findUsers(buildingId);
-    }
-
-    // Fetch buildings and blocks regardless of role
-    dashboardData.buildings = await findBuildings(buildingId);
-    dashboardData.blocks = await findBlocks(buildingId);
-    dashboardData.services = await getServices();
-    dashboardData.maintenance = await getMaintenance(buildingId);
-
-    res.status(200).json(dashboardData);
-
-  } catch (err) {
-    console.error('Error fetching dashboard data:', err);
-    res.status(500).json({ message: 'An error occurred while fetching dashboard data.' });
-  }
-});
 
 //----------------------------a POST request to approve user------------------------------------------------
 router.post('/approveUser', async (req: Request, res: Response): Promise<void> => {

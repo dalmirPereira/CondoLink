@@ -1,57 +1,5 @@
-const { PrismaClient } = require('../../generated/prisma');
+const { PrismaClient } = require('../generated/prisma');
 const prisma = new PrismaClient();
-
-const findUsers = async (buildingId: number) => {
-  const result = await prisma.user.findMany({
-    where: {
-      buildingId: buildingId,
-      roleCode: { not: 3 }
-    },
-    select: {
-      id: true,
-      fullName: true,
-      email: true,
-      unit: true,
-      roleCode: true,
-      serviceType: true,
-      companyName: true,
-      phone: true,
-      buildingId: true,
-      blockId: true,
-      approvedBy: true
-    }
-  });
-  return result;
-}
-
-//--------------------------------------------------------------------------------------
-
-const findBuildings = async (buildingId: number) => {
-  const result = await prisma.buildings.findMany({
-    where: { id: buildingId },
-    select: {
-      id: true,
-      name: true,
-      address: true,
-      code: true
-    },
-  });
-  return result;
-};
-
-//--------------------------------------------------------------------------------------
-
-const findBlocks = async (buildingId: number) => {
-  const result = await prisma.blocks.findMany({
-    where: { building_id: buildingId },
-    select: {
-      id: true,
-      name: true,
-      building_id: true
-    },
-  });
-  return result;
-};
 
 //--------------------------------------------------------------------------------------
 
@@ -97,24 +45,6 @@ const addSub = async (newSub: NewSubcontractor): Promise<Resident> => {
 };
 
 //--------------------------------------------------------------------------------------
-
-const getMaintenance = async () => {
-  const result = await prisma.maintenance.findMany();
-  return result;
-};
-
-//--------------------------------------------------------------------------------------
-interface Service {
-  id: number;
-  name: string;
-}
-
-const getServices = async (): Promise<Service> => {
-  const result = await prisma.ServiceCategory.findMany();
-  return result;
-};
-
-//--------------------------------------------------------------------------------------
 interface MaintenanceInput {
   task: string;
   buildingId: number;
@@ -151,8 +81,8 @@ export async function updateMaintenance(id: number, data: MaintenanceInput) {
     data: {
       task: data.task,
       buildingId: data.buildingId,
-      blockId: Number(data.blockId),
-      subcontractor: Number(data.subcontractor) ?? null,
+      blockId: Number(data.blockId)?? null,
+      subcontractor: data.subcontractor ? Number(data.subcontractor) : null,
       category: Number(data.category),
       status: data.status,
       comment: data.comment ?? null,
@@ -230,13 +160,8 @@ export async function updateUser(id: number, data: UserUpdateInput) {
 }
 
 module.exports = {
-  findUsers,
-  findBuildings,
-  findBlocks,
   approveUser,
   addSub,
-  getServices,
-  getMaintenance,
   addMaintenance,
   updateMaintenance,
   deleteMaintenance,

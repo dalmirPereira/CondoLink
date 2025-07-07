@@ -79,7 +79,7 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
     isFetching.current = true;
     try {
       const response = await axiosInstance.post<DashboardData>(
-        "/dashboard/admin",
+        "/dashboard",
         { id: auth.id, roleCode: auth.roleCode, buildingId: auth.buildingId },
         { headers: { Authorization: `Bearer ${auth.accessToken}` } }
       );

@@ -20,13 +20,13 @@ export function Sidebar() {
       case 2: //subcontractors
         return (
           <>
-            <SidebarItem to="/dashboard" icon={<Home size={24} />} label="Dashboard" />
+            <SidebarItem to="/dashboard/subs" icon={<Home size={24} />} label="Dashboard" />
           </>
         );
       default:
         return (
           <>
-            <SidebarItem to="/dashboard" icon={<Home size={24} />} label="Dashboard" />
+            <SidebarItem to="/dashboard/residents" icon={<Home size={24} />} label="Dashboard" />
           </>
         );
     }

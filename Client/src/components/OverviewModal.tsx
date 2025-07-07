@@ -51,7 +51,7 @@ export function OverviewModal({ open, onOpenChange, title, tasks }: OverviewModa
             {tasks.length} maintenance {tasks.length === 1 ? "task" : "tasks"} found
           </DialogDescription>
         </DialogHeader>
-
+        
         {tasks.length === 0 ? (
           <p className="text-gray-500">No tasks available.</p>
         ) : (
@@ -59,8 +59,7 @@ export function OverviewModal({ open, onOpenChange, title, tasks }: OverviewModa
             {tasks.map((task) => {
               const building = buildings.find((b) => b.id === task.buildingId)?.name || "Unknown";
               const block = blocks.find((b) => b.id === task.blockId)?.name || "Unknown";
-              const subcontractorName =
-                users.find((u) => u.id === task.subcontractor)?.fullName || "Unknown";
+              const subcontractorName = users.find((u) => u.id === task.subcontractor)?.fullName || "Unknown";
 
               return (
                 <li

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDashboard } from "../../contexts/DashboardContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";
 import { OverviewModal } from "../../components/OverviewModal";
 import { isBefore, isThisMonth, isSameMonth, addMonths, parseISO, getYear, getMonth } from "date-fns";
@@ -22,12 +23,15 @@ interface ChartDataItem {
 
 export default function MaintenanceDashboard() {
   const { dashboardData } = useDashboard();
+  const { auth } = useAuth();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalTasks, setModalTasks] = useState<MaintenanceTask[]>([]);
 
-  const maintenanceTasks: MaintenanceTask[] = dashboardData?.maintenance || [];
+  const maintenanceTasks: MaintenanceTask[] = (dashboardData?.maintenance || []).filter(
+    (task) => task.blockId === auth?.blockId
+  );
 
   const isNextMonth = (date: Date) => isSameMonth(date, addMonths(new Date(), 1));
 
@@ -74,7 +78,9 @@ export default function MaintenanceDashboard() {
   return (
     <div className="p-6 rounded-lg bg-white shadow-md min-w-0 overflow-auto" style={{ color: "var(--color-deepTealBlue)" }}>
       <h1 className="text-3xl font-bold mb-6">{dashboardData?.buildings[0]?.name} Overview</h1>
-
+      <p className="text-base text-bold leading-relaxed mb-6">
+        {dashboardData?.blocks.find((block) => block.id = auth.blockId)?.name}
+      </p>
       {/* Maintenance Summary */}
       <h2 className="text-2xl mb-4" style={{ color: "var(--color-softAqua)" }}>Maintenance Overview</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

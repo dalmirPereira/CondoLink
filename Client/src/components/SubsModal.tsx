@@ -86,7 +86,7 @@ export function SubsModal({ open, onOpenChange, subToEdit = null }: SubsModalPro
             if (subToEdit) {
                 // Update existing subcontractor
                 const response = await axiosInstance.put(
-                    `/dashboard/admin/updateSub/${subToEdit.id}`,
+                    `/admin/updateSub/${subToEdit.id}`,
                     {
                         fullName: form.fullName,
                         companyName: form.companyName,
@@ -122,7 +122,7 @@ export function SubsModal({ open, onOpenChange, subToEdit = null }: SubsModalPro
             } else {
                 // Add new subcontractor
                 const response = await axiosInstance.post(
-                    "/dashboard/admin/addSub",
+                    "/admin/addSub",
                     {
                         ...form,
                         userId: auth?.id,

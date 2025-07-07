@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
 	// Axios instance with interceptors (to use the same baseURL across many requests)
 	const axiosInstance = useMemo(() => axios.create({
-		baseURL: "http://localhost:3000",
+		baseURL: import.meta.env.VITE_BASE_URL,
 		withCredentials: true
 	}), []);
 

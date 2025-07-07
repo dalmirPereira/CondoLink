@@ -20,9 +20,6 @@ export function Footer() {
                     <Link to="/about" className="px-2 py-1" style={{ color: "var(--color-deepTealBlue)" }}>
                         About
                     </Link>
-                    <Link to="/contact" className="px-2 py-1" style={{ color: "var(--color-deepTealBlue)" }}>
-                        Contact
-                    </Link>
                 </div>
 
             </div>

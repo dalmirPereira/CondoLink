@@ -117,7 +117,7 @@ export function MaintenanceModal({ open, onOpenChange, maintenanceToEdit = null 
       if (maintenanceToEdit) {
         // Update existing
         response = await axiosInstance.put(
-          `/dashboard/admin/updateMaintenance/${form.id}`,
+          `/admin/updateMaintenance/${form.id}`,
           {
             ...form
           },
@@ -126,7 +126,7 @@ export function MaintenanceModal({ open, onOpenChange, maintenanceToEdit = null 
       } else {
         // Add new
         response = await axiosInstance.post(
-          "/dashboard/admin/addMaintenance",
+          "/admin/addMaintenance",
           {
             ...form
           },

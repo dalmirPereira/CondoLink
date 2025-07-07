@@ -53,9 +53,9 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
                 if (result.roleCode === 3) {
                     navigate("/dashboard/admin"); // Admin
                 } else if (result.roleCode === 2) {
-                    navigate("/dashboard/manager"); // Manager
+                    navigate("/dashboard/subs"); // Manager
                 } else {
-                    navigate("/dashboard"); // Resident (default)
+                    navigate("/dashboard/resident"); // Resident (default)
                 }
             }, 1500);
         } else {

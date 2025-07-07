@@ -23,7 +23,7 @@ export function Navbar() {
   };
 
   return (
-    <header className="w-full flex items-center justify-between px-6 py-4 bg-white border-b border-concreteGray shadow-sm">
+    <header className="w-full flex items-center justify-between px-6 py-3 bg-white border-b border-concreteGray shadow-sm">
       {/* Logo como link dinâmico */}
       <Link to={auth?.id ? (auth.roleCode === 3 ? "/dashboard/admin" : auth.roleCode === 2 ? "/dashboard/subs" : "/dashboard/resident") : "/"}>
         <img
