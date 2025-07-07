@@ -26,6 +26,14 @@ const handleMissingFields = async (newResident: Resident): Promise<string[]> => 
     return missingFields;
 }
 
+function isMissing(value: any): boolean {
+  if (value === null || value === undefined) return true; // null or undefined is missing
+  if (typeof value === 'string') return value.trim() === ''; // empty string is missing
+  if (typeof value === 'number') return isNaN(value); // NaN is missing
+  return false; // assume all other types are OK
+}
+
 module.exports = {
     handleMissingFields,
+    isMissing
 }

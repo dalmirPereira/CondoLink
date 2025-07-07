@@ -4,3 +4,5 @@
 20250701	19:15:50	2be7ba02-cd35-4016-9fc5-07469d1c9fe2	SyntaxError: Expected double-quoted property name in JSON at position 49 (line 5 column 1)
 20250702	11:39:48	51fb0afa-1bd4-41bd-93ea-c3cbe85cc632	TypeError: req.roles.map is not a function
 20250702	11:39:48	e2af8108-43bb-4e21-8e7b-e67ee66746fb	TypeError: req.roles.map is not a function
+20250705	17:11:05	58fe66a6-a180-4639-ba86-d722754d926b	Error: Cannot set headers after they are sent to the client
+20250705	17:11:10	682311f2-aa20-4c06-921c-68dd903092e6	Error: Cannot set headers after they are sent to the client

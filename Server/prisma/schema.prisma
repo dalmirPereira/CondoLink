@@ -8,48 +8,77 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model blocks {
-  id          Int       @id @default(autoincrement())
-  name        String    @db.VarChar(50)
-  building_id Int
-  created_at  DateTime? @default(now()) @db.Timestamp(6)
-  User        User[]
-  buildings   buildings @relation(fields: [building_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model buildings {
+  id           Int          @id @default(autoincrement())
+  name         String       @db.VarChar(100)
+  address      String?
+  code         String       @unique @db.VarChar(20)
+  created_at   DateTime?    @default(now()) @db.Timestamp(6)
+  User         User[]
+  blocks       blocks[]
+  maintenances Maintenance[]
 }
 
-model buildings {
-  id         Int       @id @default(autoincrement())
-  name       String    @db.VarChar(100)
-  address    String?
-  code       String    @unique @db.VarChar(20)
-  created_at DateTime? @default(now()) @db.Timestamp(6)
-  User       User[]
-  blocks     blocks[]
+model blocks {
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(50)
+  building_id Int
+  created_at  DateTime?    @default(now()) @db.Timestamp(6)
+  User        User[]
+  buildings   buildings    @relation(fields: [building_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  maintenances Maintenance[]
 }
 
 model User {
-  id          Int        @id @default(autoincrement())
-  email       String     @unique
-  password    String
-  fullName    String
-  roleCode    Int
-  unit        String?
-  companyName String?
-  phone       String?
-  serviceType Int?
-  buildingId  Int?
-  blockId     Int?
-  blocks      blocks?    @relation(fields: [blockId], references: [id])
-  buildings   buildings? @relation(fields: [buildingId], references: [id])
-  refreshToken String? 
+  id             Int          @id @default(autoincrement())
+  email          String       @unique
+  password       String
+  fullName       String
+  roleCode       Int
+  unit           String?
+  companyName    String?
+  phone          String?
+  serviceType    Int?
+  buildingId     Int?
+  blockId        Int?
+  blocks         blocks?      @relation(fields: [blockId], references: [id])
+  buildings      buildings?   @relation(fields: [buildingId], references: [id])
+  refreshToken   String? 
 
-  approvedBy      Int?      // foreign key to admin ID
-  approvedByUser  User?    @relation("UserApprover", fields: [approvedBy], references: [id])
-  approvedUsers   User[]   @relation("UserApprover")  // reverse relation
+  approvedBy      Int?      
+  approvedByUser  User?       @relation("UserApprover", fields: [approvedBy], references: [id])
+  approvedUsers   User[]      @relation("UserApprover")
 
+  maintenances   Maintenance[]
 }
 
 model ServiceCategory {
-  id   Int    @id @default(autoincrement())
-  name String @unique
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+
+  maintenances Maintenance[]
+}
+
+model Maintenance {
+  id             Int             @id @default(autoincrement())
+  task           String          @db.VarChar(50)
+  buildingId     Int
+  blockId        Int
+  subcontractor  Int?            // optional
+  category       Int
+  status         String         @db.VarChar(50)
+  comment        String?         @db.VarChar(100)
+  created_at     DateTime        @default(now())
+  dueTo          DateTime
+
+  // Relations
+  building       buildings       @relation(fields: [buildingId], references: [id])
+  block          blocks          @relation(fields: [blockId], references: [id])
+  user           User?           @relation(fields: [subcontractor], references: [id])
+  serviceCategory ServiceCategory @relation(fields: [category], references: [id])
+
+  @@index([buildingId])
+  @@index([blockId])
+  @@index([subcontractor])
+  @@index([category])
 }

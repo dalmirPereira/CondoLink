@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom'
 import Home from './pages/Home'
 import About from './pages/About'
 import NotFound from './pages/NotFound'
@@ -23,20 +23,29 @@ function AppRouter() {
         <Route path="/unauthorized" element={<Unauthorized />} />
 
         {/*Protected Routes*/}
-        <Route path="/admin"
+        <Route path="/dashboard"
           element={
-            <ProtectedRoute allowedRoles={[3]}>
+            <ProtectedRoute allowedRoles={[1, 2, 3]}>
               <Dashboard />
             </ProtectedRoute>
           }
         >
           {/* Nested routes */}
-          <Route index element={<AdminHome />} />
-          <Route path="residents" element={<AdminResidents />} />
-          <Route path="subs" element={<AdminSubs />} />
-          <Route path="maintenance" element={<AdminMaintenance />}/>
-        </Route>
+          <Route
+            path="admin"
+            element={
+              <ProtectedRoute allowedRoles={[3]}>
+                <Outlet />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminHome />} />
+            <Route path="residents" element={<AdminResidents />} />
+            <Route path="subs" element={<AdminSubs />} />
+            <Route path="maintenance" element={<AdminMaintenance />} />
+          </Route>
 
+        </Route>
       </Routes>
     </BrowserRouter>
   )

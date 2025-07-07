@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -7,23 +7,22 @@ import { toast } from "sonner";
 import { useAuth } from "../contexts/AuthContext";
 import { useDashboard } from "../contexts/DashboardContext";
 
-
 interface SubcontractorForm {
     fullName: string;
     companyName: string;
     phone: string;
     email: string;
     serviceType: number | "";
-    password: string;
+    password: string; // required only when adding
 }
 
 interface SubsModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    subToEdit?: any | null; // optional subcontractor to edit
 }
 
-export function SubsModal({ open, onOpenChange }: SubsModalProps) {
-
+export function SubsModal({ open, onOpenChange, subToEdit = null }: SubsModalProps) {
     const { auth, axiosInstance } = useAuth();
     const { dashboardData, setDashboardData } = useDashboard();
 
@@ -40,9 +39,28 @@ export function SubsModal({ open, onOpenChange }: SubsModalProps) {
 
     const [form, setForm] = useState<SubcontractorForm>(initialFormState);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // When subToEdit changes, update form state
+    useEffect(() => {
+        if (subToEdit) {
+            setForm({
+                fullName: subToEdit.fullName || "",
+                companyName: subToEdit.companyName || "",
+                phone: subToEdit.phone || "",
+                email: subToEdit.email || "",
+                serviceType: subToEdit.serviceType || "",
+                password: "", // empty password (optional on update)
+            });
+        } else {
+            setForm(initialFormState);
+        }
+    }, [subToEdit]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
+        setForm((prev) => ({
+            ...prev,
+            [name]: name === "serviceType" ? (value === "" ? "" : Number(value)) : value,
+        }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -53,52 +71,88 @@ export function SubsModal({ open, onOpenChange }: SubsModalProps) {
             return;
         }
 
-        if (!form.password) {
-            toast("Password required", { description: "Please enter a password." });
-            return;
-        }
-
         if (!form.serviceType) {
             toast("Category required", { description: "Please select a category." });
             return;
         }
 
+        // On add: password required, on edit: optional
+        if (!subToEdit && !form.password) {
+            toast("Password required", { description: "Please enter a password." });
+            return;
+        }
+
         try {
-            const response: any = await axiosInstance.post(
-                "/dashboard/admin/addSub",
-                {
-                    ...form,
-                    userId: auth?.id,
-                    buildingId: auth?.buildingId,
-                },
-                { headers: { Authorization: `Bearer ${auth?.accessToken}` } }
-            );
+            if (subToEdit) {
+                // Update existing subcontractor
+                const response = await axiosInstance.put(
+                    `/dashboard/admin/updateSub/${subToEdit.id}`,
+                    {
+                        fullName: form.fullName,
+                        companyName: form.companyName,
+                        phone: form.phone,
+                        email: form.email,
+                        serviceType: form.serviceType,
+                        ...(form.password ? { password: form.password } : {})
+                    },
+                    { headers: { Authorization: `Bearer ${auth?.accessToken}` } }
+                );
 
-            const newUser = response.data.result;
+                const updatedUser = response.data.result;
 
-            // Update local context without re-fetching
-            if (dashboardData) {
-                setDashboardData({
-                    ...dashboardData,
-                    users: [...dashboardData.users, newUser],
-                });
-            }
+                if (response.data.success) {
+                    // Update user in context
+                    if (dashboardData) {
+                        setDashboardData({
+                            ...dashboardData,
+                            users: dashboardData.users.map(u =>
+                                u.id === updatedUser.id ? updatedUser : u
+                            ),
+                        });
+                    }
 
-            if (response.data.success) {
-                toast("Subcontractor", { description: "Added with success" });
+                    toast("Subcontractor updated", { description: "Update successful." });
 
-                setForm(initialFormState);
-
-                setTimeout(() => {
-                    onOpenChange(false);
-                }, 1500);
+                    setTimeout(() => {
+                        onOpenChange(false);
+                    }, 1500);
+                } else {
+                    toast("Update failed", { description: response.data.message || "Please try again." });
+                }
             } else {
-                toast("Subcontractor failed", { description: "Please try again." });
-            }
+                // Add new subcontractor
+                const response = await axiosInstance.post(
+                    "/dashboard/admin/addSub",
+                    {
+                        ...form,
+                        userId: auth?.id,
+                        buildingId: auth?.buildingId,
+                    },
+                    { headers: { Authorization: `Bearer ${auth?.accessToken}` } }
+                );
 
+                const newUser = response.data.result;
+
+                if (response.data.success) {
+                    if (dashboardData) {
+                        setDashboardData({
+                            ...dashboardData,
+                            users: [...dashboardData.users, newUser],
+                        });
+                    }
+
+                    toast("Subcontractor added", { description: "Added with success." });
+
+                    setTimeout(() => {
+                        onOpenChange(false);
+                    }, 1500);
+                } else {
+                    toast("Add failed", { description: response.data.message || "Please try again." });
+                }
+            }
         } catch (err: any) {
-            const serverMessage = err.response?.data?.message || "Failed to add new subcontrator.";
-            toast("Subcontractor failed", { description: serverMessage });
+            const serverMessage = err.response?.data?.message || "Failed to save subcontractor.";
+            toast("Error", { description: serverMessage });
         }
     };
 
@@ -109,7 +163,9 @@ export function SubsModal({ open, onOpenChange }: SubsModalProps) {
                 color: "var(--color-deepTealBlue)",
             }}>
                 <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold">Add New Subcontractor</DialogTitle>
+                    <DialogTitle className="text-2xl font-bold">
+                        {subToEdit ? "Update Subcontractor" : "Add New Subcontractor"}
+                    </DialogTitle>
                     <DialogDescription className="text-base mb-4 text-muted-foreground">
                         Fill in the details below
                     </DialogDescription>
@@ -166,15 +222,17 @@ export function SubsModal({ open, onOpenChange }: SubsModalProps) {
                     </div>
 
                     <div>
-                        <Label className="mb-1" htmlFor="password">Password</Label>
+                        <Label className="mb-1" htmlFor="password">
+                            Password {subToEdit ? "(leave blank to keep current)" : ""}
+                        </Label>
                         <Input
                             type="password"
                             id="password"
                             name="password"
                             value={form.password}
                             onChange={handleChange}
-                            required
                             placeholder="••••••••"
+                            {...(!subToEdit && { required: true })}
                         />
                     </div>
 
@@ -184,7 +242,7 @@ export function SubsModal({ open, onOpenChange }: SubsModalProps) {
                             id="serviceType"
                             name="serviceType"
                             value={form.serviceType}
-                            onChange={e => setForm(prev => ({ ...prev, serviceType: e.target.value === "" ? "" : Number(e.target.value) }))}
+                            onChange={handleChange}
                             required
                             className="border rounded px-2 py-1 w-full"
                         >
@@ -198,7 +256,7 @@ export function SubsModal({ open, onOpenChange }: SubsModalProps) {
                     </div>
 
                     <Button type="submit" className="w-full">
-                        Add Subcontractor
+                        {subToEdit ? "Update Subcontractor" : "Add Subcontractor"}
                     </Button>
                 </form>
             </DialogContent>

@@ -33,11 +33,25 @@ interface Service {
   name: string;
 }
 
+interface Maintenance {
+  id: number;
+  task: string;
+  buildingId: number;
+  blockId: number;
+  subcontractor: number | null;
+  category: number;
+  status: string;
+  comment: string | null;
+  created_at: string;
+  dueTo: string;
+}
+
 interface DashboardData {
   users: User[];
   buildings: Building[];
   blocks: Block[];
   services: Service[];
+  maintenance: Maintenance[]
 }
 
 interface DashboardContextType {

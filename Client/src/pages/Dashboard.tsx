@@ -9,14 +9,13 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col h-screen">
       <Navbar />
-
-      <main className="flex flex-grow p-5 ">
+      <main className="flex flex-grow p-3 ">
         {/* flex row container full height */}
         <aside className="min-w-16">
           <Sidebar />
         </aside>
 
-        <section className="flex-grow pl-4 ">
+        <section className="flex-grow pl-4 h-full overflow-hidden sm:overflow-auto">
            <Outlet />
         </section>
       </main>

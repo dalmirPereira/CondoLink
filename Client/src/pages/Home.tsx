@@ -1,10 +1,13 @@
-import { Link } from "react-router-dom";
 import { H1, Paragraph } from "../components/ui/typography";
 import { Button } from "../components/ui/button";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
+import { SignUpModal } from "../components/SignUpModal";
+import { useState } from "react";
 
 export default function Home() {
+  const [signUpOpen, setSignUpOpen] = useState(false);
+  
   return (
     <div className="w-full min-h-screen bg-neutralWhite font-sans flex flex-col">
       
@@ -21,15 +24,18 @@ export default function Home() {
             Stay informed, submit requests, and build a stronger community.
           </Paragraph>
 
-          <Link to="/signup">
-            <Button className="mt-4 px-6 py-3 text-lg shadow-md hover:shadow-lg transition">
+            <Button onClick={() => setSignUpOpen(true)} className="mt-4 px-6 py-3 text-lg shadow-md hover:shadow-lg transition">
               Get Started
             </Button>
-          </Link>
         </div>
       </main>
 
       <Footer />
+
+      <SignUpModal
+        open={signUpOpen}
+        onOpenChange={setSignUpOpen}
+      />
     </div>
   );
 }

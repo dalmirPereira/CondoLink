@@ -17,7 +17,7 @@ const generateAuthTokens = async (email: string, id: number, roleCode: number) =
     };
 
     const secretAccess = process.env.ACCESS_TOKEN_SECRET;
-    const expireAccess = {expiresIn: "0.1m"}
+    const expireAccess = {expiresIn: "15m"}
     const accessToken = jwt.sign(payload, secretAccess, expireAccess);
 
     const secretRefresh = process.env.REFRESH_TOKEN_SECRET;

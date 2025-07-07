@@ -11,10 +11,10 @@ export function Sidebar() {
       case 3: //admin
         return (
           <>
-            <SidebarItem to="/admin" icon={<Home size={24} />} label="Dashboard" />
-            <SidebarItem to="/admin/residents" icon={<Users size={24} />} label="Residents" />
-            <SidebarItem to="/admin/subs" icon={<UserCog size={24} />} label="Subcontractors" />
-            <SidebarItem to="/admin/maintenance" icon={<Wrench size={24} />} label="Maintenance" />
+            <SidebarItem to="/dashboard/admin" icon={<Home size={24} />} label="Dashboard" />
+            <SidebarItem to="/dashboard/admin/residents" icon={<Users size={24} />} label="Residents" />
+            <SidebarItem to="/dashboard/admin/subs" icon={<UserCog size={24} />} label="Subcontractors" />
+            <SidebarItem to="/dashboard/admin/maintenance" icon={<Wrench size={24} />} label="Maintenance" />
           </>
         );
       case 2: //subcontractors

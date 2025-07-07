@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Paragraph } from "./ui/typography";
 import { toast } from "sonner";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -12,7 +11,6 @@ interface LoginForm {
     email: string;
     password: string;
 }
-
 interface LoginModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -46,12 +44,19 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
         }
 
         const result = await login(form);
-
+        
         if (result.success) {
             toast("Login successful", { description: "Welcome back!" });
             setTimeout(() => {
                 onOpenChange(false);
-                navigate("/admin");
+                // Navigate based on roleCode
+                if (result.roleCode === 3) {
+                    navigate("/dashboard/admin"); // Admin
+                } else if (result.roleCode === 2) {
+                    navigate("/dashboard/manager"); // Manager
+                } else {
+                    navigate("/dashboard"); // Resident (default)
+                }
             }, 1500);
         } else {
             toast("Login failed", { description: result.message || "Please try again." });
@@ -103,17 +108,6 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
                         Log In
                     </Button>
                 </form>
-
-                <Paragraph className="mt-4 text-center text-sm">
-                    Don't have an account?{" "}
-                    <Link
-                        to="/signup"
-                        className="text-condoBlue font-semibold"
-                        onClick={() => onOpenChange(false)} // closes modal on route change
-                    >
-                        Sign up here
-                    </Link>
-                </Paragraph>
             </DialogContent>
         </Dialog>
     );
